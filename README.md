@@ -6,7 +6,7 @@ Welcome to the Tour Management System, a web application built using Node.js and
 
 1. Clone the Repository:
     ```bash
-    git clone https://github.com/Laura902l/webAss3.git
+    git clone [https://github.com/Laura902l/webAss3.git](https://github.com/Laura902l/webAss3/blob/master.git
 
     cd webAss3
 
