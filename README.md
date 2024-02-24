@@ -6,8 +6,10 @@ Welcome to the Tour Management System, a web application built using Node.js and
 
 1. Clone the Repository:
     ```bash
-    git clone https://github.com/Laura902l/assWeb2.git
-    cd assWeb2
+    git clone https://github.com/Laura902l/webAss3.git
+
+    cd webAss3
+
 
     ```
 ## Do not forget install method-override
@@ -15,6 +17,11 @@ Welcome to the Tour Management System, a web application built using Node.js and
     ```bash
     npm install method-override
     npm install
+    npm install body-parser
+    npm install mongoose
+
+    npm install mongodb
+
     ```
 
 3. Run the Application:
