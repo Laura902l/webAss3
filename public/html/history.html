@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Manager</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1 class="mt-5 mb-4 text-center bg-warning">Task Manager</h1>
+
+        <form id="add-task-form">
+            <div class="form-group">
+                <label for="title">Title:</label>
+                <input type="text" class="form-control" id="title" name="title" required>
+            </div>
+            <div class="form-group">
+                <label for="description">Description:</label>
+                <textarea class="form-control" id="description" name="description"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="comment">Comment:</label>
+                <textarea class="form-control" id="comment" name="comment"></textarea>
+            </div>
+            <div class="text-center">
+                <button type="submit" class="btn btn-warning">Add Task</button>
+            </div>
+        </form>
+
+        <br>
+        <h2>Tasks:</h2>
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Comment</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="task-list">
+            </tbody>
+          </table>
+        </div>
+    </div>
+
+
+    <script>
+        async function fetchAndDisplayTasks() {
+            const response = await fetch('/tasks');
+            const tasks = await response.json();
+        
+            const taskList = document.getElementById('task-list');
+            taskList.innerHTML = ''; 
+        
+            tasks.forEach(task => {
+                const row = document.createElement('tr');
+                const titleCell = document.createElement('td');
+                titleCell.textContent = task.title;
+                const descriptionCell = document.createElement('td');
+                descriptionCell.textContent = task.description;
+                const commentCell = document.createElement('td');
+                commentCell.textContent = task.comment;
+        
+                const actionCell = document.createElement('td');
+                const updateButton = document.createElement('button');
+                updateButton.textContent = 'Update';
+                updateButton.addEventListener('click', () => updateTask(task._id));
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Delete';
+                deleteButton.addEventListener('click', () => deleteTask(task._id));
+                actionCell.appendChild(updateButton);
+                actionCell.appendChild(deleteButton);
+        
+                row.appendChild(titleCell);
+                row.appendChild(descriptionCell);
+                row.appendChild(commentCell);
+                row.appendChild(actionCell);
+        
+                taskList.appendChild(row);
+            });
+        }
+        
+
+        async function addTask(event) {
+            event.preventDefault();
+
+            const formData = new FormData(document.getElementById('add-task-form'));
+            const title = formData.get('title');
+            const description = formData.get('description');
+            const comment = formData.get('comment');
+
+            const response = await fetch('/tasks', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ title, description, comment })
+            });
+
+            if (response.ok) {
+                fetchAndDisplayTasks(); 
+                document.getElementById('add-task-form').reset();
+            } else {
+                alert('Failed to add task');
+            }
+        }
+
+        async function deleteTask(taskId) {
+            if (confirm("Are you sure?")) {
+                const response = await fetch(`/tasks/${taskId}`, {
+                  method: 'DELETE'
+                });
+
+            if (response.ok) {
+                fetchAndDisplayTasks();
+            } else {
+                alert('Failed to delete task');
+            }
+        }
+    }
+
+        async function updateTask(taskId) {
+            const newTitle = prompt('Enter new title:');
+            const newDescription = prompt('Enter new description:');
+            const newComment = prompt('Enter new comment:');
+            const response = await fetch(`/tasks/${taskId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ title: newTitle, description: newDescription, comment: newComment })
+            });
+
+            if (response.ok) {
+                fetchAndDisplayTasks(); 
+            } else {
+                alert('Failed to update task');
+            }
+        }
+
+        
+        document.getElementById('add-task-form').addEventListener('submit', addTask);
+
+        fetchAndDisplayTasks();
+    </script>
+</body>
+
+</html>
