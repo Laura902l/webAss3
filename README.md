@@ -27,7 +27,7 @@ Welcome to the Tour Management System, a web application built using Node.js and
 3. Run the Application:
 
     ```bash
-    npm start
+    node server.js
     ```
 
     The application will run on http://localhost:3000.
